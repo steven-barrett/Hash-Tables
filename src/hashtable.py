@@ -15,7 +15,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
-
+        self.count = 0
 
     def _hash(self, key):
         '''
@@ -48,10 +48,19 @@ class HashTable:
         Store the value with the given key.
 
         Hash collisions should be handled with Linked List Chaining.
+        '''        
+        if self.count >= self.capacity:
+            self.resize()
 
-        Fill this in.
-        '''
-        pass
+        # Shift everything at index to the right
+        if key > self.count:
+            print("ERROR: Out of range")
+            return
+
+        for i in range(self.count, key, -1):
+            self.storage[i] = self.storage[i - 1]
+        self.storage[key] = value
+        self.count += 1
 
 
 
@@ -60,10 +69,16 @@ class HashTable:
         Remove the value stored with the given key.
 
         Print a warning if the key is not found.
-
-        Fill this in.
         '''
-        pass
+        if key >= self.count:
+            print("ERROR: Out of range")
+            return
+
+        # Shift everything to the left
+        for i in range(key, self.count - 1, 1):
+            self.storage[i] = self.storage[i+1]
+        self.count -= 1
+
 
 
     def retrieve(self, key):
@@ -81,10 +96,15 @@ class HashTable:
         '''
         Doubles the capacity of the hash table and
         rehash all key/value pairs.
-
-        Fill this in.
         '''
-        pass
+
+        self.capacity *= 2
+        new_storage = [None] * self.capacity
+
+        for i in range(self.count):
+            new_storage[i] = self.storage[i]
+
+        self.storage = new_storage
 
 
 
